@@ -1,0 +1,644 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>西社村旅游网</title>
+<style>
+/* ========== RESET ========== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif; }
+
+/* ========== Site Nav ========== */
+.site-nav {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  padding: 0 24px; height: 52px;
+  border-bottom: 1px solid #e0dbd4;
+}
+.site-nav .nav-logo { font-size: 20px; font-weight: 700; color: #3d2b1a; }
+.site-nav .nav-links { display: flex; gap: 20px; list-style: none; }
+.site-nav .nav-links a {
+  text-decoration: none; color: #6b5d4f; font-size: 14px;
+  transition: color 0.2s;
+}
+.site-nav .nav-links a:hover { color: #c4563a; }
+
+/* ========== Hero ========== */
+.hero {
+  position: relative; height: 420px;
+  background: #3a5068;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.hero .hero-bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; z-index: 0;
+}
+.hero .hero-title {
+  font-size: 48px; font-weight: 700; color: #fff;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.7), 0 4px 16px rgba(0,0,0,0.5);
+  letter-spacing: 8px; z-index: 2;
+}
+.hero .hero-subtitle {
+  font-size: 18px; color: #fff;
+  margin-top: 12px; letter-spacing: 4px; z-index: 2;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.7), 0 2px 8px rgba(0,0,0,0.5);
+}
+.hero .hero-tag {
+  margin-top: 20px; padding: 8px 24px;
+  border: 1px solid rgba(255,255,255,0.6);
+  border-radius: 20px;
+  font-size: 14px; color: #fff;
+  z-index: 2;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.25);
+}
+
+/* ========== Section Common ========== */
+.sec { padding: 60px 24px; }
+.sec-narrow { max-width: 680px; margin: 0 auto; }
+.sec-title {
+  font-size: 26px; font-weight: 700; color: #3d2b1a;
+  text-align: center; margin-bottom: 8px;
+}
+.sec-sub {
+  font-size: 14px; color: #9b8c7c; text-align: center;
+  margin-bottom: 36px; letter-spacing: 1px;
+}
+
+/* ========== About ========== */
+.sec-about { background: #fff; }
+.sec-about .about-text {
+  font-size: 15px; line-height: 2.1; color: #4a3f35;
+  text-indent: 2em;
+}
+
+/* ========== Attractions ========== */
+.sec-attractions { background: #faf7f2; }
+.attr-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 780px; margin: 0 auto;
+}
+.attr-card {
+  background: #fff; border-radius: 12px;
+  overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.2s;
+}
+.attr-card:hover { transform: translateY(-3px); }
+.attr-card.attr-closed { opacity: 0.55; cursor: pointer; }
+.attr-card.attr-closed:hover { opacity: 0.7; }
+.attr-card.attr-closed .attr-img {
+  position: relative;
+}
+.attr-card.attr-closed .attr-img::after {
+  content: '暂封'; position: absolute; top: 8px; right: 8px;
+  background: #c4563a; color: #fff; font-size: 11px;
+  padding: 2px 8px; border-radius: 10px; font-weight: 600;
+}
+.attr-card .attr-img {
+  height: 200px; overflow: hidden;
+  background: linear-gradient(135deg, #8fad9b, #c4b896);
+}
+.attr-card .attr-img img {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block;
+}
+.attr-card .attr-label {
+  padding: 14px; font-size: 15px; font-weight: 600;
+  color: #3d2b1a; text-align: center;
+  background: #fff;
+}
+
+/* ========== Homestay ========== */
+.sec-homestay { background: #fff; }
+.homestay-box {
+  max-width: 620px; margin: 0 auto;
+  background: #faf7f2; border-radius: 16px;
+  padding: 36px 32px; text-align: center;
+}
+.homestay-box .hs-icon { font-size: 44px; margin-bottom: 14px; }
+.homestay-box .hs-name { font-size: 24px; font-weight: 700; color: #3d2b1a; margin-bottom: 10px; }
+.homestay-box .hs-desc { font-size: 15px; color: #6b5d4f; line-height: 1.9; }
+.homestay-box .hs-badge {
+  display: inline-block; margin-top: 18px;
+  padding: 8px 22px; background: #c4563a; color: #fff;
+  border-radius: 20px; font-size: 14px; letter-spacing: 1px;
+}
+
+/* ========== Restaurant ========== */
+.sec-restaurant { background: #faf7f2; }
+.restaurant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  max-width: 720px; margin: 0 auto;
+}
+.rest-card {
+  background: #fff; border-radius: 14px; padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.rest-card .rc-icon { font-size: 32px; margin-bottom: 10px; }
+.rest-card .rc-name { font-size: 18px; font-weight: 700; color: #3d2b1a; margin-bottom: 6px; }
+.rest-card .rc-desc { font-size: 13px; color: #6b5d4f; line-height: 1.7; margin-bottom: 12px; }
+.rest-card .rc-meta {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  font-size: 12px; color: #9b8c7c;
+}
+.rest-card .rc-meta span { display: flex; align-items: center; gap: 4px; }
+
+/* ========== Reviews ========== */
+.sec-reviews { background: #faf7f2; }
+.review-list {
+  display: flex; flex-direction: column; gap: 16px;
+  max-width: 620px; margin: 0 auto;
+}
+.review-card {
+  background: #fff; border-radius: 10px; padding: 20px 22px;
+  display: flex; gap: 16px; align-items: flex-start;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+.review-card .rv-avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: linear-gradient(135deg, #c4b896, #8fad9b);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: #fff;
+}
+.review-card .rv-content { flex: 1; }
+.review-card .rv-name { font-size: 14px; font-weight: 600; color: #3d2b1a; }
+.review-card .rv-date { font-size: 11px; color: #b5a797; margin-left: 8px; }
+.review-card .rv-stars { color: #f0a828; font-size: 12px; margin: 4px 0; }
+.review-card .rv-text { font-size: 14px; color: #6b5d4f; line-height: 1.7; }
+
+/* 伊的留言：缩成一条缝，点击展开 */
+.review-sliver {
+  height: 10px; padding: 0; overflow: hidden;
+  cursor: pointer; transition: all 0.4s ease;
+  background: transparent; border: none;
+  margin: 0; position: relative;
+}
+.review-sliver::after {
+  content: ''; position: absolute; left: 4%; right: 4%; top: 50%;
+  transform: translateY(-50%); height: 2px;
+  background: #d5cfc4;
+  animation: sliverBlink 1.3s ease-in-out infinite;
+}
+@keyframes sliverBlink {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1.0; }
+}
+.review-sliver.revealed {
+  height: auto; padding: 18px 20px;
+  background: #fef9f4; border-left: 3px solid #c4563a;
+  margin-bottom: 6px;
+  animation: none; opacity: 1;
+}
+.review-sliver.revealed::after { display: none; }
+.review-sliver .rv-avatar,
+.review-sliver .rv-content { opacity: 0; transition: opacity 0.3s ease; }
+.review-sliver.revealed .rv-avatar,
+.review-sliver.revealed .rv-content { opacity: 1; }
+
+/* 隐藏评价 & 展开按钮 */
+.review-card.hidden-review { display: none; }
+.review-card.hidden-review.show { display: flex; }
+.review-card.review-clue {
+  background: #fef9f4;
+  border-left: 3px solid #c4563a;
+}
+.review-expand {
+  text-align: center; padding: 8px 0;
+  font-size: 13px; color: #9b8c7c;
+  cursor: pointer; user-select: none;
+  transition: color 0.2s;
+}
+.review-expand:hover { color: #c4563a; }
+.review-expand .re-arrow {
+  display: inline-block; transition: transform 0.3s;
+  margin-left: 4px;
+}
+.review-expand.open .re-arrow { transform: rotate(180deg); }
+
+/* ========== Safety ========== */
+.sec-safety { background: #fff; }
+.safety-box {
+  max-width: 620px; margin: 0 auto; padding: 28px;
+  border: 1px solid #e0dbd4; border-radius: 12px;
+  display: flex; align-items: center; gap: 24px;
+}
+.safety-box .sf-icon {
+  width: 60px; height: 60px; border-radius: 50%;
+  background: #e8f0e8; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px;
+}
+.safety-box .sf-info { flex: 1; }
+.safety-box .sf-title { font-size: 17px; font-weight: 700; color: #3d2b1a; margin-bottom: 6px; }
+.safety-box .sf-name { font-size: 14px; color: #4a3f35; }
+.safety-box .sf-phone { font-size: 16px; color: #c4563a; font-weight: 600; margin-top: 6px; }
+
+/* ========== Footer ========== */
+.site-footer {
+  background: #3d2b1a; color: rgba(255,255,255,0.65);
+  padding: 36px 24px; text-align: center; font-size: 13px;
+  line-height: 2.2;
+}
+.site-footer .footer-links {
+  display: flex; justify-content: center; gap: 24px; margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.site-footer .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; }
+.site-footer .footer-links a:hover { color: rgba(255,255,255,0.8); }
+.site-footer .footer-beian { color: rgba(255,255,255,0.4); }
+
+/* ========== Toast ========== */
+.toast-overlay {
+  position: fixed; inset: 0; z-index: 999;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.45);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.toast-overlay.show { opacity: 1; pointer-events: auto; }
+.toast-box {
+  background: #fff; border-radius: 14px; padding: 28px 32px;
+  text-align: center; max-width: 320px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  animation: toastIn 0.3s ease;
+}
+@keyframes toastIn {
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+.toast-box .tb-icon { font-size: 36px; margin-bottom: 12px; }
+.toast-box .tb-title { font-size: 17px; font-weight: 700; color: #3d2b1a; margin-bottom: 6px; }
+.toast-box .tb-desc { font-size: 14px; color: #8e8e93; line-height: 1.6; margin-bottom: 18px; }
+.toast-box .tb-btn {
+  display: inline-block; padding: 8px 32px;
+  background: #c4563a; color: #fff; border: none;
+  border-radius: 20px; font-size: 15px; cursor: pointer;
+}
+
+/* ========== 光标统一规范 ========== */
+a[href="#"] { cursor: default; }
+a[href="#"]:hover { text-decoration: none; }
+a[href]:not([href="#"]) { cursor: pointer; }
+.attr-card:not(.attr-closed) { cursor: default; }
+.nav-links a, .footer-links a { cursor: default; }
+button, .tb-btn { cursor: pointer; }
+a.hs-badge { cursor: pointer; }
+.hs-badge { cursor: default; }
+
+/* ========== Responsive ========== */
+@media (max-width: 600px) {
+  .site-nav { padding: 0 16px; }
+  .site-nav .nav-links { gap: 12px; }
+  .site-nav .nav-links a { font-size: 12px; }
+  .hero { height: 320px; }
+  .hero .hero-title { font-size: 36px; letter-spacing: 4px; }
+  .hero .hero-subtitle { font-size: 15px; }
+  .sec { padding: 40px 16px; }
+  .attr-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .attr-card .attr-img { height: 120px; }
+  .attr-card .attr-label { font-size: 13px; padding: 10px; }
+}
+
+@media (max-width: 400px) {
+  .site-nav .nav-links { gap: 8px; }
+  .site-nav .nav-links a { font-size: 11px; }
+  .attr-grid { grid-template-columns: repeat(2, 1fr); }
+  .attr-card .attr-img { height: 80px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="site-nav">
+  <span class="nav-logo">🏔 西社村</span>
+  <ul class="nav-links">
+    <li><a href="#">首页</a></li>
+    <li><a href="#">关于西社</a></li>
+    <li><a href="#">旅游攻略</a></li>
+    <li><a href="#">民宿预订</a></li>
+    <li><a href="#">联系我们</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <img class="hero-bg" src="图片素材/西社村背景图.png" alt="西社村" />
+  <div class="hero-title">西社村</div>
+  <div class="hero-subtitle">华北最后的桃花源</div>
+  <div class="hero-tag">国家AAA级旅游景区 · 传统村落保护单位</div>
+</section>
+
+<!-- ABOUT -->
+<section class="sec sec-about">
+  <div class="sec-narrow">
+    <div class="sec-title">关于西社</div>
+    <div class="sec-sub">—— 溙山深处的隐世村落 ——</div>
+    <p class="about-text">
+      西社村位于东山省境内溙山山脉深处，距最近的县城约40公里。村庄依山而建，保留了明清时期的建筑风貌，石墙青瓦、古树参天。因交通不便，游客稀少，被誉为"华北最后的桃花源"。村内现有常住人口约200人，以种植核桃、板栗和中药材为主要经济来源。近年来，在政府扶持下，西社村发展生态旅游，开放了归隐民宿体验项目，每年限量接待游客，以保护古村落的原始风貌。
+    </p>
+  </div>
+</section>
+
+<!-- ATTRACTIONS -->
+<section class="sec sec-attractions">
+  <div class="sec-title">推荐景点</div>
+  <div class="sec-sub">—— 每一处都是遗世独立的风景 ——</div>
+  <div class="attr-grid">
+    <div class="attr-card">
+      <div class="attr-img"><img src="图片素材/千年古槐.png" alt="千年古槐" /></div>
+      <div class="attr-label">千年古槐</div>
+    </div>
+    <div class="attr-card">
+      <div class="attr-img"><img src="图片素材/明清石板街.png" alt="明清石板街" /></div>
+      <div class="attr-label">明清石板街</div>
+    </div>
+    <div class="attr-card">
+      <div class="attr-img"><img src="图片素材/龙泉古井.png" alt="龙泉古井" /></div>
+      <div class="attr-label">龙泉古井</div>
+    </div>
+    <div class="attr-card">
+      <div class="attr-img"><img src="图片素材/鹰嘴崖.png" alt="鹰嘴崖" /></div>
+      <div class="attr-label">鹰嘴崖</div>
+    </div>
+    <div class="attr-card">
+      <div class="attr-img"><img src="图片素材/梯田花海.png" alt="梯田花海" /></div>
+      <div class="attr-label">梯田花海</div>
+    </div>
+    <div class="attr-card attr-closed" id="card-guantai" title="后山观日台">
+      <div class="attr-img"><img src="图片素材/观日台.png" alt="后山观日台" /></div>
+      <div class="attr-label">后山观日台</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOMESTAY -->
+<section class="sec sec-homestay">
+  <div class="sec-title">归隐民宿</div>
+  <div class="sec-sub">—— 全网抽签，限量体验 ——</div>
+  <div class="homestay-box">
+    <div class="hs-icon">🏡</div>
+    <div class="hs-name">西社村·归隐民宿</div>
+    <div class="hs-desc">
+      由百年老宅改建，仅设8间客房。每年5月至10月开放，<br>
+      采用摇号抽签方式确定入住资格，中签率不足5%。<br>
+      每批客人入住期间，全村将暂停接待其他游客，<br>
+      确保您独享整座古村的宁静。
+    </div>
+    <a href="guestbook.html" id="guestbook-link" style="display:none;margin-bottom:10px;font-size:13px;color:#c4563a;text-decoration:none;border-bottom:1px dashed #c4563a;">📝 住客留言</a>
+    <div class="hs-badge">🌿 2026年度名额已满，敬请期待2027</div>
+  </div>
+</section>
+
+<!-- RESTAURANT -->
+<section class="sec sec-restaurant">
+  <div class="sec-title">乡村饭店</div>
+  <div class="sec-sub">—— 柴火灶台，家的味道 ——</div>
+  <div class="homestay-box">
+    <div class="hs-icon"><img src="图片素材/乡村饭店.png" alt="西社农家菜馆" style="width:100%;max-width:400px;height:200px;object-fit:cover;border-radius:8px;display:block;margin:0 auto 14px;" /></div>
+    <div class="hs-name">西社农家菜馆</div>
+    <div class="hs-desc">
+      村中心唯一一家饭店，由村民老陈夫妇经营。<br>
+      主打地道家常菜，食材全部来自村里自种自养。<br>
+      土鸡炖蘑菇、柴火铁锅鱼、手工石磨豆腐是招牌。
+    </div>
+    <a href="restaurant.html" class="hs-badge" style="text-decoration:none;">🍽 查看详情 & 订餐</a>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="sec sec-reviews">
+  <div class="sec-title">游客心声</div>
+  <div class="sec-sub">—— 听听来过的人怎么说 ——</div>
+  <div class="review-list">
+    <div class="review-card">
+      <div class="rv-avatar">🌿</div>
+      <div class="rv-content">
+        <span class="rv-name">张先生</span><span class="rv-date">2026年7月</span>
+        <div class="rv-stars">★★★★★</div>
+        <div class="rv-text">在城市里从没见过这么干净的星空。民宿老板人很好，做的农家菜特别香。走的时候还有点舍不得。</div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="rv-avatar">🌸</div>
+      <div class="rv-content">
+        <span class="rv-name">李女士</span><span class="rv-date">2026年6月</span>
+        <div class="rv-stars">★★★★★</div>
+        <div class="rv-text">终于理解了什么叫"桃花源"。村子里安静得只能听见鸟叫和风声。已经推荐给所有朋友了，希望明年还能中签。</div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="rv-avatar">💊</div>
+      <div class="rv-content">
+        <span class="rv-name">陈女士</span><span class="rv-date">2026年4月</span>
+        <div class="rv-stars">★★★☆☆</div>
+        <div class="rv-text">风景没得说，就是村里没什么医疗条件。我儿子发烧，村卫生所就开了点退烧药。后来严重了只能去镇上的<strong>矿医院</strong>治疗。</div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="rv-avatar">🍃</div>
+      <div class="rv-content">
+        <span class="rv-name">王同学</span><span class="rv-date">2026年5月</span>
+        <div class="rv-stars">★★★★★</div>
+        <div class="rv-text">一个人去的，本来有点担心安全，结果发现村里治安很好，还有驻村民警巡逻。拍了好多照片，朋友圈都问这是哪里。</div>
+      </div>
+    </div>
+
+    <!-- 隐藏评价 -->
+    <div class="review-card hidden-review">
+      <div class="rv-avatar">🏔</div>
+      <div class="rv-content">
+        <span class="rv-name">刘先生</span><span class="rv-date">2025年10月</span>
+        <div class="rv-stars">★★★☆☆</div>
+        <div class="rv-text">第二次来了。后山日出还是那么美，但这次在观日台附近闻到了一股很重的铁锈味，有点不舒服。下次不往后山走了。</div>
+      </div>
+    </div>
+
+    <!-- 伊的留言：夹在刘先生和孙先生之间，一条缝，点击展开 -->
+    <div class="review-card hidden-review review-sliver" id="yi-sliver" onclick="revealYi()">
+      <div class="rv-avatar">🍂</div>
+      <div class="rv-content">
+        <span class="rv-name">伊</span><span class="rv-date">2026年8月</span>
+        <div class="rv-stars">★★☆☆☆</div>
+        <div class="rv-text">我是本地人。这里不是你们以为的那样。如果你在找人——去村里的饭店看看<strong>菜单</strong>。注意那些<strong>数字</strong>。</div>
+      </div>
+    </div>
+
+    <div class="review-card hidden-review">
+      <div class="rv-avatar">🌲</div>
+      <div class="rv-content">
+        <span class="rv-name">孙先生</span><span class="rv-date">2025年6月</span>
+        <div class="rv-stars">★★★★☆</div>
+        <div class="rv-text">村子确实很美，就是后山那边晚上老有车来车往的声音，睡不太踏实。跟民宿老板说了，老板说那是巡逻的。</div>
+      </div>
+    </div>
+
+    <!-- 展开按钮 -->
+    <div class="review-expand" id="review-expand-btn" onclick="toggleReviews()">
+      展开更多评价 <span class="re-arrow">▾</span>
+    </div>
+  </div>
+</section>
+
+<!-- SAFETY -->
+<section class="sec sec-safety">
+  <div class="sec-title">安全提示</div>
+  <div class="sec-sub">—— 您的安全是我们的首要任务 ——</div>
+  <div class="safety-box">
+    <div class="sf-icon">👮</div>
+    <div class="sf-info">
+      <div class="sf-title">驻村民警联系方式</div>
+      <div class="sf-name">西社村警务室 · 民警：马建国</div>
+      <div class="sf-phone">📞 138-xxxx-xxxx</div>
+    </div>
+  </div>
+  <div style="text-align:center; margin-top:18px;">
+    <a href="village-committee.html" style="display:inline-block; padding:6px 18px; border:1px solid #c4563a; border-radius:16px; color:#c4563a; text-decoration:none; font-size:13px; transition:all 0.2s;">🏛 西社村村委会官网</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-links">
+    <a href="#">关于我们</a>
+    <a href="#">免责声明</a>
+    <a href="#">隐私政策</a>
+    <a href="#">投诉建议</a>
+  </div>
+  <div>© 2024-2026 西社村旅游服务中心 版权所有</div>
+  <div class="footer-beian">ICP备案号：东ICP备2024XXXXXXXX号-1 | 公安机关备案号：XXXXXXXXXXXX</div>
+  <div class="footer-beian">地址：东山省XX市XX县西社村 | 客服电话：400-xxxx-xxxx</div>
+</footer>
+
+<!-- TOAST OVERLAY -->
+<div class="toast-overlay" id="toast-overlay">
+  <div class="toast-box">
+    <div class="tb-icon">🚧</div>
+    <div class="tb-title">后山观日台</div>
+    <div class="tb-desc">因特殊原因暂时封闭，<br>开放时间另行通知。</div>
+    <button class="tb-btn" id="toast-close">知道了</button>
+  </div>
+</div>
+
+<script>
+document.getElementById('card-guantai').addEventListener('click', () => {
+  document.getElementById('toast-overlay').classList.add('show');
+});
+document.getElementById('toast-close').addEventListener('click', () => {
+  document.getElementById('toast-overlay').classList.remove('show');
+});
+document.getElementById('toast-overlay').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('show');
+});
+
+// 游客评价展开/收起
+function toggleReviews() {
+  var hidden = document.querySelectorAll('.review-card.hidden-review');
+  var btn = document.getElementById('review-expand-btn');
+  var isOpen = btn.classList.contains('open');
+  if (isOpen) {
+    hidden.forEach(function(el) { el.classList.remove('show'); });
+    btn.classList.remove('open');
+    btn.innerHTML = '展开更多评价 <span class="re-arrow">▾</span>';
+  } else {
+    hidden.forEach(function(el) { el.classList.add('show'); });
+    btn.classList.add('open');
+    btn.innerHTML = '收起 <span class="re-arrow">▾</span>';
+  }
+}
+
+// 伊的留言：点击缝隙展开
+function revealYi() {
+  document.getElementById('yi-sliver').classList.add('revealed');
+}
+</script>
+
+<script>
+document.addEventListener('click', function(e) {
+  var a = e.target.closest('a[href="#"]');
+  if (a) { e.preventDefault(); }
+});
+</script>
+
+<script>
+if (localStorage.getItem('xsg_guestbook_unlocked') === '1') {
+  document.getElementById('guestbook-link').style.display = 'inline-block';
+}
+
+// 恐吓效果：解锁留言板后触发，直到玩家进入留言板再返回才恢复
+(function(){
+  var scareActive = localStorage.getItem('xsg_scare_active') === '1';
+  var scareDone = localStorage.getItem('xsg_scare_done') === '1';
+
+  if (scareDone) {
+    localStorage.removeItem('xsg_scare_active');
+    localStorage.removeItem('xsg_scare_done');
+    return;
+  }
+
+  if (!scareActive) return;
+
+  function doScare(){
+    var body = document.body;
+    var phrase = '我看到你了';
+    var skipIds = ['guestbook-link', 'scare-style'];
+
+    function shouldSkip(el) {
+      while (el && el !== body) {
+        if (skipIds.indexOf(el.id) !== -1) return true;
+        el = el.parentElement;
+      }
+      return false;
+    }
+
+    var textNodes = [];
+    var walker = document.createTreeWalker(body, NodeFilter.SHOW_TEXT, null, false);
+    var node;
+    while (node = walker.nextNode()) {
+      var txt = node.textContent.trim();
+      if (txt.length > 0 && node.parentElement.tagName !== 'SCRIPT' && node.parentElement.tagName !== 'STYLE' && !shouldSkip(node.parentElement)) {
+        textNodes.push({ node: node, orig: node.textContent, parent: node.parentElement });
+      }
+    }
+
+    for (var i = 0; i < textNodes.length; i++) {
+      var origLen = textNodes[i].orig.length;
+      var repeat = Math.max(1, Math.ceil(origLen / phrase.length));
+      var filled = '';
+      for (var r = 0; r < repeat; r++) { filled += phrase; }
+      textNodes[i].node.textContent = filled.substring(0, Math.max(origLen, phrase.length));
+      textNodes[i].parent.style.color = '#c00';
+    }
+
+    var scareStyle = document.createElement('style');
+    scareStyle.id = 'scare-style';
+    scareStyle.textContent = 'body,html,*{background:#000!important;background-color:#000!important;}';
+    document.head.appendChild(scareStyle);
+
+    var imgs = document.querySelectorAll('img');
+    for (var j = 0; j < imgs.length; j++) {
+      imgs[j].style.filter = 'invert(1) brightness(0.6)';
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', doScare);
+  } else {
+    doScare();
+  }
+})();
+</script>
+<script src="evidence-panel.js"></script>
+</body>
+</html>

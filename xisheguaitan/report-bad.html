@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>举报材料 — 西社怪谈</title>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { background:#1a1a1a; font-family:"Microsoft YaHei","SimSun",sans-serif; color:#999; line-height:1.8; }
+.container { max-width:700px; margin:0 auto; padding:50px 20px; text-align:center; }
+
+.ending-badge { font-size:14px; color:#888; letter-spacing:2px; margin-bottom:20px; }
+.ending-title { font-size:32px; color:#ccaa44; font-weight:bold; letter-spacing:3px; margin-bottom:30px; }
+
+.story-box { background:#1c1c1c; border:1px solid #2a2a2a; padding:28px 24px; margin-bottom:24px; text-align:left; font-size:14px; line-height:2.2; font-family:"SimSun","宋体",serif; }
+.story-box p { text-indent:2em; margin-bottom:10px; }
+
+.result-box { background:#1c1c1c; border:1px solid #662222; padding:24px; margin:30px 0; }
+.result-box h2 { color:#cc6666; font-size:20px; margin-bottom:14px; }
+.result-box p { font-size:14px; line-height:2; }
+
+.actions { margin:30px 0; }
+.actions button { padding:10px 28px; margin:0 8px; font-size:14px; cursor:pointer; border:none; letter-spacing:1px; }
+.actions .btn-retry { background:#8b1a1a; color:#fff; }
+.actions .btn-retry:hover { background:#a01e1e; }
+.actions .btn-back { background:#333; color:#888; }
+.actions .btn-back:hover { background:#444; }
+
+.footnote { color:#555; font-size:12px; margin-top:40px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="ending-badge">—— 结局一 ——</div>
+  <div class="ending-title">石沉大海</div>
+
+  <div class="story-box">
+    <p>你将手中收集到的材料整理成一份举报文件，匿名发送给了东山省公安厅刑事举报中心。</p>
+    <p>两天后，你收到了一封自动回复邮件："感谢您的举报，我们将依法进行初步审查。如符合立案条件，将在15个工作日内与您联系。"</p>
+    <p>你等了十天。没有任何人联系你。</p>
+    <p>你拨打了0351-96110。接电话的工作人员态度很好，但说系统里查不到你的举报记录。"可能是材料不充分，被筛选掉了。要不您再重新提交一次？"</p>
+    <p>你又提交了一次。这次连自动回复都没有收到。</p>
+    <p>一个月后，西社村旅游网仍然在正常运营。归隐民宿2027年度的抽签报名已经开始了。评论区仍然全是五星好评。</p>
+    <p>你把那些材料收进了一个文件夹。有时候你还会打开看看，盯着谢青果的名字发呆。</p>
+    <p>然后关掉。继续生活。</p>
+  </div>
+
+  <div class="result-box">
+    <h2>结 局</h2>
+    <p>举报因证据不足未能立案。<br>西社村继续接待着下一批游客。</p>
+  </div>
+
+  <div class="actions">
+    <button class="btn-retry" onclick="localStorage.clear();location.href='index.html';">🔄 重新开始</button>
+    <button class="btn-back" onclick="history.back();">← 返回继续调查</button>
+  </div>
+
+  <div class="footnote">
+    <p>《西社怪谈》· 本故事纯属虚构</p>
+    <p style="margin-top:8px;color:#ccaa44;">感谢游玩</p>
+  </div>
+
+</div>
+
+</body>
+</html>
