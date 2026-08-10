@@ -1,0 +1,482 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>西社农家菜馆 - 订餐</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ========== 复古基调 ========== */
+html, body {
+  font-family: "KaiTi", "楷体", "STKaiti", "SimSun", "宋体", serif;
+  background: #e8dcc8;
+  color: #3d2b1a;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(139,90,43,0.03) 3px, rgba(139,90,43,0.03) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 5px, rgba(139,90,43,0.02) 5px, rgba(139,90,43,0.02) 6px);
+}
+
+/* ========== 木匾店招 ========== */
+.signboard {
+  max-width: 720px; margin: 30px auto 0;
+  background: linear-gradient(180deg, #c49a6c 0%, #b8875a 30%, #a0734a 70%, #8b5e3c 100%);
+  border: 8px solid #5c3a1e;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.3);
+  padding: 28px 20px 16px; text-align: center;
+  position: relative;
+}
+.signboard::before {
+  content: ''; position: absolute; top: 8px; left: 12px; right: 12px; bottom: 8px;
+  border: 2px solid rgba(92,58,30,0.5);
+  pointer-events: none;
+}
+.signboard .shop-name {
+  font-size: 36px; font-weight: bold; color: #2c1608;
+  font-family: "KaiTi", "楷体", "STKaiti", serif;
+  letter-spacing: 6px; text-shadow: 1px 1px 0 rgba(255,255,255,0.1);
+}
+.signboard .shop-sub {
+  font-size: 15px; color: #f5e6d3; margin-top: 6px;
+  letter-spacing: 4px; font-family: "SimSun", "宋体", serif;
+}
+.signboard .shop-nail {
+  position: absolute; width: 14px; height: 14px;
+  background: radial-gradient(circle, #888, #333);
+  border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+.signboard .shop-nail.tl { top: 18px; left: 22px; }
+.signboard .shop-nail.tr { top: 18px; right: 22px; }
+.signboard .shop-nail.bl { bottom: 18px; left: 22px; }
+.signboard .shop-nail.br { bottom: 18px; right: 22px; }
+
+/* 返回链接 */
+.back-row {
+  max-width: 720px; margin: 10px auto 0; text-align: right;
+}
+.back-row a {
+  font-size: 13px; color: #8b5e3c; text-decoration: none;
+  font-family: "SimSun", "宋体", serif;
+}
+.back-row a:hover { color: #c41e1a; text-decoration: underline; }
+
+/* ========== 公用板块 ========== */
+.sec { max-width: 720px; margin: 24px auto; }
+
+/* ========== 告示 ========== */
+.notice-paper {
+  background: #faf3e6;
+  border: 1px solid #d4c5a9;
+  padding: 28px 26px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  /* 纸纹 */
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(180,160,130,0.12) 28px, rgba(180,160,130,0.12) 29px);
+}
+.notice-paper::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 20% 80%, rgba(139,90,43,0.06) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 20%, rgba(139,90,43,0.04) 0%, transparent 50%);
+  pointer-events: none;
+}
+.notice-paper .np-head {
+  text-align: center; margin-bottom: 20px;
+  font-family: "KaiTi", "楷体", "STKaiti", serif;
+}
+.notice-paper .np-head .np-title {
+  font-size: 24px; font-weight: bold; color: #5c3a1e;
+  letter-spacing: 3px;
+}
+.notice-paper .np-head .np-divider {
+  color: #c49a6c; font-size: 13px; letter-spacing: 2px;
+  margin-top: 4px;
+}
+
+/* 关于 */
+.about-content { display: flex; gap: 20px; align-items: flex-start; }
+.about-content .ac-icon {
+  width: 64px; height: 64px; flex-shrink: 0;
+  background: #e8d5c0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; border: 2px solid #c49a6c;
+}
+.about-content .ac-text { flex: 1; }
+.about-content .ac-text .ac-name {
+  font-size: 18px; font-weight: bold; font-family: "KaiTi", "楷体", serif;
+  color: #5c3a1e; margin-bottom: 2px;
+}
+.about-content .ac-text .ac-role {
+  font-size: 12px; color: #a08060; margin-bottom: 8px;
+  font-family: "SimSun", "宋体", serif;
+}
+.about-content .ac-text .ac-desc {
+  font-size: 14px; line-height: 1.9; color: #4a3525;
+  text-indent: 2em;
+}
+.about-content .ac-text .ac-meta {
+  margin-top: 10px; display: flex; flex-wrap: wrap; gap: 14px;
+  font-size: 13px; color: #8b7355; font-family: "SimSun", "宋体", serif;
+}
+
+/* ========== 菜单 ========== */
+.menu-bg {
+  background: #faf3e6;
+  border: 1px solid #d4c5a9;
+  padding: 24px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.menu-bg .menu-head {
+  text-align: center; margin-bottom: 16px;
+  font-family: "KaiTi", "楷体", "STKaiti", serif;
+}
+.menu-bg .menu-head .mh-title {
+  font-size: 22px; font-weight: bold; color: #5c3a1e; letter-spacing: 2px;
+}
+.menu-bg .menu-head .mh-sub {
+  font-size: 12px; color: #a08060; letter-spacing: 1px; margin-top: 2px;
+}
+
+.menu-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: 10px 0; border-bottom: 1px dotted #c4b090;
+  font-family: "SimSun", "宋体", serif;
+}
+.menu-row:last-child { border-bottom: none; }
+.menu-row .mr-name {
+  font-size: 16px; color: #3d2b1a; font-family: "KaiTi", "楷体", serif;
+}
+.menu-row .mr-name .mr-tag {
+  display: inline-block; font-size: 10px; padding: 1px 6px;
+  margin-left: 6px; font-family: "SimSun", "宋体", serif;
+}
+.mr-tag.star { background: #c41e1a; color: #f5e6d3; }
+.mr-tag.rec  { background: #5c3a1e; color: #e8d5c0; }
+.menu-row .mr-desc {
+  display: block; font-size: 11px; color: #a09080; margin-top: 2px;
+}
+.menu-row .mr-price {
+  font-size: 28px; color: #5c3a1e; font-family: "KaiTi", "楷体", serif;
+  white-space: nowrap; margin-left: 16px;
+  position: relative;
+}
+.menu-row .mr-price::before {
+  content: '¥'; font-size: 14px; font-family: "SimSun", "宋体", serif;
+  vertical-align: super;
+}
+
+/* ========== 评价 ========== */
+.guestbook {
+  background: #faf3e6;
+  border: 1px solid #d4c5a9;
+  padding: 24px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.guestbook .gb-head {
+  text-align: center; margin-bottom: 16px;
+  font-family: "KaiTi", "楷体", "STKaiti", serif;
+}
+.guestbook .gb-head .gb-title {
+  font-size: 22px; font-weight: bold; color: #5c3a1e; letter-spacing: 2px;
+}
+.guestbook .gb-head .gb-sub {
+  font-size: 12px; color: #a08060; letter-spacing: 1px; margin-top: 2px;
+}
+.gb-entry {
+  padding: 14px 0; border-bottom: 1px dashed #c4b090;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.gb-entry:last-child { border-bottom: none; }
+.gb-entry .gb-avatar {
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: #e8d5c0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; border: 1px solid #c49a6c;
+}
+.gb-entry .gb-body { flex: 1; }
+.gb-entry .gb-body .gb-meta {
+  font-size: 12px; margin-bottom: 4px;
+}
+.gb-entry .gb-body .gb-meta .gb-author {
+  font-weight: bold; color: #5c3a1e; font-family: "KaiTi", "楷体", serif;
+}
+.gb-entry .gb-body .gb-meta .gb-date {
+  color: #b5a090; margin-left: 8px; font-family: "SimSun", "宋体", serif;
+}
+.gb-entry .gb-body .gb-stars {
+  color: #c41e1a; font-size: 11px; margin-bottom: 3px;
+}
+.gb-entry .gb-body .gb-text {
+  font-size: 13px; line-height: 1.7; color: #5c4a3a;
+  font-family: "SimSun", "宋体", serif;
+}
+
+/* ========== 预约 ========== */
+.booking-paper {
+  background: #fdf5e6;
+  border: 1px solid #c41e1a;
+  padding: 24px; text-align: center;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.booking-paper::before {
+  content: ''; position: absolute; top: 6px; left: 10px; right: 10px; bottom: 6px;
+  border: 1px dashed rgba(196,30,26,0.3);
+  pointer-events: none;
+}
+.booking-paper .bp-seal {
+  position: absolute; top: 12px; right: 20px;
+  width: 60px; height: 60px; border: 2px solid #c41e1a;
+  border-radius: 50%; display: flex; align-items: center;
+  justify-content: center; font-size: 11px; color: #c41e1a;
+  font-weight: bold; transform: rotate(-15deg);
+  font-family: "KaiTi", "楷体", serif; letter-spacing: 1px;
+  line-height: 1.3; opacity: 0.7;
+}
+.booking-paper .bp-title {
+  font-size: 20px; font-weight: bold; color: #5c3a1e;
+  font-family: "KaiTi", "楷体", serif; letter-spacing: 2px;
+}
+.booking-paper .bp-desc {
+  font-size: 13px; color: #8b7355; margin: 8px 0 14px;
+  font-family: "SimSun", "宋体", serif; line-height: 1.7;
+}
+.booking-paper .bp-phone {
+  font-size: 30px; font-weight: bold; color: #5c3a1e;
+  font-family: "KaiTi", "楷体", serif; letter-spacing: 2px;
+}
+
+/* ========== 页脚 ========== */
+.foot {
+  max-width: 720px; margin: 24px auto 30px;
+  text-align: center; font-size: 11px; color: #a09080;
+  font-family: "SimSun", "宋体", serif;
+}
+.foot a { color: #8b5e3c; text-decoration: none; }
+.foot a:hover { color: #c41e1a; text-decoration: underline; }
+
+/* ========== 光标 ========== */
+a[href]:not([href="#"]) { cursor: pointer; }
+.menu-row, .gb-entry, .booking-paper, .notice-paper, .signboard { cursor: default; }
+
+/* ========== 响应式 ========== */
+@media (max-width: 760px) {
+  .signboard, .sec, .back-row, .foot { margin-left: 10px; margin-right: 10px; }
+  .signboard .shop-name { font-size: 26px; letter-spacing: 3px; }
+  .about-content { flex-direction: column; align-items: center; text-align: center; }
+  .about-content .ac-text .ac-meta { justify-content: center; }
+  .menu-row .mr-price { font-size: 22px; }
+  .booking-paper .bp-seal { position: static; margin: 0 auto 10px; transform: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== 木匾店招 ========== -->
+<div class="signboard">
+  <span class="shop-nail tl"></span><span class="shop-nail tr"></span>
+  <span class="shop-nail bl"></span><span class="shop-nail br"></span>
+  <div class="shop-name">西社农家菜馆</div>
+  <div class="shop-sub">—— 柴火灶台 · 家常味道 ——</div>
+</div>
+
+<div class="back-row">
+  <a href="website.html">‹ 返回西社村旅游网</a>
+</div>
+
+<!-- ========== 关于我们 ========== -->
+<section class="sec">
+  <div class="notice-paper">
+    <div class="np-head">
+      <div class="np-title">关 于 我 们</div>
+      <div class="np-divider">———— 村中心唯一一家饭店 ————</div>
+    </div>
+    <div class="about-content">
+      <div class="ac-icon">👨‍🌾</div>
+      <div class="ac-text">
+        <div class="ac-name">老陈夫妇</div>
+        <div class="ac-role">店主 & 主厨 | 经营至今已十五年</div>
+        <div class="ac-desc">
+          老陈是土生土长的西社村人，年轻时在外学过几年厨，后来回村开了这家菜馆。厨房用的还是老式柴火灶台，菜是自家地里种的，鸡是后院养的，豆腐是每天早上现磨的。用老陈的话说："没啥花样，就是家常味儿。"
+        </div>
+        <div class="ac-meta">
+          <span>📍 西社村中心石板街8号</span>
+          <span>🕐 早7:00 — 晚21:00</span>
+          <span>📞 138-xxxx-xxxx</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== 菜单 ========== -->
+<section class="sec">
+  <div class="menu-bg">
+    <div class="menu-head">
+      <div class="mh-title">菜 单</div>
+      <div class="mh-sub">—— 家常味道 · 每日新鲜 ——</div>
+    </div>
+
+    <div class="menu-row">
+      <div>
+        <span class="mr-name">土鸡炖蘑菇<span class="mr-tag star">招牌</span></span>
+        <span class="mr-desc">后院散养土鸡，配溙山野生榛蘑，柴火慢炖三小时</span>
+      </div>
+      <span class="mr-price">20</span>
+    </div>
+
+    <div class="menu-row">
+      <div>
+        <span class="mr-name">柴火铁锅鱼<span class="mr-tag star">招牌</span></span>
+        <span class="mr-desc">水库活鱼现杀，铁锅柴火炖，配手工贴饼子</span>
+      </div>
+      <span class="mr-price">26</span>
+    </div>
+
+    <div class="menu-row">
+      <div>
+        <span class="mr-name">手工石磨豆腐</span>
+        <span class="mr-desc">清晨现磨，可点葱烧、麻婆、清炖三种做法</span>
+      </div>
+      <span class="mr-price">22</span>
+    </div>
+
+    <div class="menu-row">
+      <div>
+        <span class="mr-name">农家小炒肉</span>
+        <span class="mr-desc">村里土猪肉，配青椒木耳，柴火快炒</span>
+      </div>
+      <span class="mr-price">32</span>
+    </div>
+
+    <div class="menu-row">
+      <div>
+        <span class="mr-name">山韭菜炒土鸡蛋</span>
+        <span class="mr-desc">后院土鸡蛋，山韭菜清晨现割</span>
+      </div>
+      <span class="mr-price">18</span>
+    </div>
+
+    <div class="menu-row">
+      <div>
+        <span class="mr-name">排骨炖豆角</span>
+        <span class="mr-desc">土猪小排，配自家种的油豆角</span>
+      </div>
+      <span class="mr-price">48</span>
+    </div>
+
+    <div class="menu-row">
+      <div>
+        <span class="mr-name">玉米面贴饼子<span class="mr-tag star">招牌</span></span>
+        <span class="mr-desc">自家磨的玉米面，铁锅边上贴出来，外酥里软</span>
+      </div>
+      <span class="mr-price">08</span>
+    </div>
+
+    <div class="menu-row">
+      <div>
+        <span class="mr-name">山菌野菜汤</span>
+        <span class="mr-desc">溙山应季野菌，配时令山野菜，清淡鲜美</span>
+      </div>
+      <span class="mr-price">16</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 食客留言 ========== -->
+<section class="sec">
+  <div class="guestbook">
+    <div class="gb-head">
+      <div class="gb-title">食 客 留 言</div>
+      <div class="gb-sub">—— 来过的人都怎么说 ——</div>
+    </div>
+
+    <div class="gb-entry">
+      <div class="gb-avatar">🏔</div>
+      <div class="gb-body">
+        <div class="gb-meta">
+          <span class="gb-author">赵先生</span>
+          <span class="gb-date">二〇二五年十月</span>
+        </div>
+        <div class="gb-stars">★★★★★</div>
+        <div class="gb-text">住了三天，顿顿都在老陈这儿吃。土鸡炖蘑菇绝了，柴火味儿城里是吃不到的。走之前老陈还特意给打包了一袋贴饼子让路上吃。</div>
+      </div>
+    </div>
+
+    <div class="gb-entry">
+      <div class="gb-avatar">🌸</div>
+      <div class="gb-body">
+        <div class="gb-meta">
+          <span class="gb-author">小果</span>
+          <span class="gb-date">二〇二六年七月</span>
+        </div>
+        <div class="gb-stars">★★★★★</div>
+        <div class="gb-text">一个人来的，老陈夫妇特别照顾，怕我一个人吃不完，每道菜都给我做了小份。铁锅鱼一定要点！吃完去后山看落日，太美了。</div>
+      </div>
+    </div>
+
+    <div class="gb-entry">
+      <div class="gb-avatar">🍃</div>
+      <div class="gb-body">
+        <div class="gb-meta">
+          <span class="gb-author">周女士</span>
+          <span class="gb-date">二〇二六年六月</span>
+        </div>
+        <div class="gb-stars">★★★★★</div>
+        <div class="gb-text">带爸妈一起来的，老人家吃得很开心。豆腐是他们家自己做的，特别嫩。老板娘还送了一碟自制的泡菜，酸辣开胃。</div>
+      </div>
+    </div>
+
+    <div class="gb-entry">
+      <div class="gb-avatar">🌿</div>
+      <div class="gb-body">
+        <div class="gb-meta">
+          <span class="gb-author">吴先生</span>
+          <span class="gb-date">二〇二六年五月</span>
+        </div>
+        <div class="gb-stars">★★★★☆</div>
+        <div class="gb-text">味道确实好，就是地方不大好找。不过村里人都很热情，问个路就找到了。建议来之前提前给老陈打个电话，他好提前备菜。</div>
+      </div>
+    </div>
+
+    <div class="gb-entry">
+      <div class="gb-avatar">🌾</div>
+      <div class="gb-body">
+        <div class="gb-meta">
+          <span class="gb-author">阿玲</span>
+          <span class="gb-date">二〇二五年十月</span>
+        </div>
+        <div class="gb-stars">★★★★★</div>
+        <div class="gb-text">第二次来了！每次来西社村都必须吃一顿老陈家的饭。这次还尝了他们新做的山菌野菜汤，鲜掉眉毛。希望明年还能中签。</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== 预约 ========== -->
+<section class="sec">
+  <div class="booking-paper">
+    <div class="bp-seal">电话<br>预约</div>
+    <div class="bp-title">预 约 订 餐</div>
+    <div class="bp-desc">
+      老陈夫妇年纪大了不怎么会用手机，<br>请直接拨打电话预订，他们会在本子上记下您的名字和人数。
+    </div>
+    <div class="bp-phone">138 - xxxx - xxxx</div>
+  </div>
+</section>
+
+<div class="foot">
+  © 西社农家菜馆 · 村中心石板街8号 | <a href="website.html">返回西社村旅游网</a>
+</div>
+
+<script>
+document.addEventListener('click', function(e) {
+  var a = e.target.closest('a[href="#"]');
+  if (a) { e.preventDefault(); }
+});
+</script>
+
+</body>
+</html>
